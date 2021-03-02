@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-als-client
+  labels:
+    app: envoy-als-client
+    version: v1
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: envoy-als-client
+  template:
+    metadata:
+      labels:
+        app: envoy-als-client
+    spec:
+      containers:
+        - name: envoy-als-client
+          imagePullPolicy: IfNotPresent
+          image: envoy-als-client:latest
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: envoy-als-client-svc
+spec:
+  selector:
+    app: envoy-als-client
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
